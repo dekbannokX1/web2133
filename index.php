@@ -67,7 +67,7 @@ $user_id = isset($_SESSION['user_id']) ? $_SESSION['user_id'] : null; // กำ�
         </a>
 
         <?php if (isset($_SESSION['user_id'])): ?>
-            <a href="logout.html" class="mt-6 block bg-red-500 text-white py-2 px-4 rounded-lg hover:bg-red-600">
+            <a href="logout.php" class="mt-6 block bg-red-500 text-white py-2 px-4 rounded-lg hover:bg-red-600">
                 ออกจากระบบ
             </a>
         <?php endif; ?>
