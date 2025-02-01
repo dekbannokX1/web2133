@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>พรีออเดอร์เสื้อ</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 flex justify-center items-center min-h-screen">
+
+    <div class="bg-white p-6 rounded-xl shadow-lg w-96">
+        <h1 class="text-2xl font-bold text-gray-700 mb-4">พรีออเดอร์เสื้อ</h1>
+
+        <!-- รูปภาพเสื้อ -->
+        <img id="shirtImage" src="https://cdn.discordapp.com/attachments/1334530893276123292/1334852846444744714/544714405636473057.jpg?ex=679e0a16&is=679cb896&hm=10a87bcba3aee9edae0483231a7b9a69cbe75419fc9aa9d4baf344fa2f8d4ae6&" alt="เสื้อ" class="w-full my-4 rounded-md">
+
+        <!-- เลือกสี -->
+        <div class="mb-4">
+            <label class="block text-gray-600">เลือกสี:</label>
+            <select id="colorSelect" class="w-full p-2 border rounded mt-1">
+                <option value="black">ดำ</option>
+                <option value="white">ขาว</option>
+                <option value="red">แดง</option>
+            </select>
+        </div>
+
+        <!-- เลือกไซส์ -->
+        <div class="mb-4">
+            <label class="block text-gray-600">เลือกไซส์:</label>
+            <select id="sizeSelect" class="w-full p-2 border rounded mt-1">
+                <option value="S">S</option>
+                <option value="M">M</option>
+                <option value="L">L</option>
+                <option value="XL">XL</option>
+            </select>
+        </div>
+
+        <!-- จำนวนเสื้อ -->
+        <div class="mb-4">
+            <label class="block text-gray-600">จำนวน:</label>
+            <input id="quantityInput" type="number" value="1" min="1" class="w-full p-2 border rounded mt-1">
+        </div>
+
+        <!-- ช่องกรอกที่อยู่ -->
+        <div class="mb-4">
+            <label class="block text-gray-600">ที่อยู่:</label>
+            <textarea id="addressInput" rows="3" class="w-full p-2 border rounded mt-1" placeholder="กรอกที่อยู่ของคุณ" required></textarea>
+        </div>
+
+        <!-- ช่องกรอกชื่อ-นามสกุล -->
+        <div class="mb-4">
+            <label class="block text-gray-600">ชื่อ-นามสกุล:</label>
+            <input id="fullNameInput" type="text" class="w-full p-2 border rounded mt-1" placeholder="กรอกชื่อและนามสกุล" required>
+        </div>
+
+        <!-- ช่องกรอกเบอร์โทรศัพท์ -->
+        <div class="mb-4">
+            <label class="block text-gray-600">เบอร์โทรศัพท์:</label>
+            <input id="phoneInput" type="tel" class="w-full p-2 border rounded mt-1" placeholder="กรอกเบอร์โทรศัพท์" required>
+        </div>
+
+        <!-- แสดงราคาคำนวณ -->
+        <div class="mb-4">
+            <label class="block text-gray-600">ราคาทั้งหมด:</label>
+            <p id="totalPrice" class="text-xl font-bold text-green-500">ราคา: 550 บาท</p>
+        </div>
+
+        <!-- ปุ่มสั่งซื้อ -->
+        <button id="orderBtn" class="bg-blue-500 text-white py-2 px-4 rounded-lg w-full hover:bg-blue-600">
+            สั่งซื้อ
+        </button>
+    </div>
+
+    <script>
+        const pricePerShirt = 550; // ราคาเสื้อตัวละ 550 บาท
+
+        // คำนวณราคาทั้งหมด
+        function calculateTotalPrice() {
+            let quantity = document.getElementById("quantityInput").value;
+            let totalPrice = quantity * pricePerShirt;
+            document.getElementById("totalPrice").textContent = `ราคา: ${totalPrice} บาท`;
+        }
+
+        // ฟังชั่นการสั่งซื้อ
+        document.getElementById("orderBtn").addEventListener("click", function () {
+            let color = document.getElementById("colorSelect").value;
+            let size = document.getElementById("sizeSelect").value;
+            let quantity = document.getElementById("quantityInput").value;
+            let totalPrice = quantity * pricePerShirt;
+            let address = document.getElementById("addressInput").value;
+            let fullName = document.getElementById("fullNameInput").value;
+            let phone = document.getElementById("phoneInput").value;
+
+            // ตรวจสอบว่าไม่มีการกรอกที่อยู่หรือข้อมูลสำคัญ
+            if (address.trim() === "" || fullName.trim() === "" || phone.trim() === "") {
+                alert("กรุณากรอกข้อมูลทั้งหมด");
+                return;
+            }
+
+            // แจ้งเตือน
+            alert(`คุณได้สั่งซื้อเสื้อสี ${color} ไซส์ ${size} จำนวน ${quantity} ตัว รวมเป็นเงิน ${totalPrice} บาท\nที่อยู่: ${address}\nชื่อ: ${fullName}\nเบอร์โทรศัพท์: ${phone}`);
+
+            // ข้อมูลที่จะส่งไปที่ Discord Webhook
+            let webhookURL = "YOUR_DISCORD_WEBHOOK_URL";
+            let payload = {
+                content: `มีการสั่งซื้อใหม่! \nรายละเอียดการสั่งซื้อ: \nเสื้อสี: ${color} \nไซส์: ${size} \nจำนวน: ${quantity} ตัว \nราคาทั้งหมด: ${totalPrice} บาท \nที่อยู่: ${address} \nชื่อ-นามสกุล: ${fullName} \nเบอร์โทรศัพท์: ${phone}`
+            };
+
+            // ส่งข้อมูลไปที่ Discord Webhook
+            fetch(webhookURL, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(payload)
+            });
+
+            // สามารถเพิ่มการทำงานอื่นๆ หลังจากการสั่งซื้อเสร็จ เช่น การเก็บข้อมูลในฐานข้อมูล
+        });
+
+        // คำนวณราคาทุกครั้งที่จำนวนเปลี่ยน
+        document.getElementById("quantityInput").addEventListener("input", calculateTotalPrice);
+
+        // เริ่มต้นคำนวณราคาเมื่อโหลดหน้า
+        calculateTotalPrice();
+    </script>
+
+</body>
+</html>
